@@ -1,15 +1,15 @@
 import requests as requests
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from rest_framework import generics
 from django.utils.translation import gettext as _
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from core.api.v1.serializers import SocialMediaCreateOrUpdateSerializer, SocialMediaVariationSerializer
 from core.consts import SocialMediaBrightVerificationStatus
 from core.models import SocialMediaVariation, SocialMedia
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
 
 
 class SocialMediaVariationListView(generics.ListAPIView):

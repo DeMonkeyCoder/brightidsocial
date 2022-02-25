@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
+
 class SocialMediaType(models.TextChoices):
     SOCIAL_PROFILE = 'so', _('Social Profile')
     PHONE_NUMBER = 'ph', _('Phone Number')
@@ -28,6 +29,7 @@ class SocialMediaShareActionType(models.TextChoices):
 class BrightIdNetwork(models.TextChoices):
     TEST = 'test', _('test')
     NODE = 'node', _('node')
+
 
 class SocialMediaBrightVerificationStatus(models.TextChoices):
     PENDING = '0', _("Pending")

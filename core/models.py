@@ -1,11 +1,11 @@
 from uuid import uuid4
 
+from django.contrib.auth.models import User
 from django.db import models
-from django.utils.translation import gettext as _
+from rest_framework.authtoken.models import Token
+
 from core.consts import SocialMediaType, SocialMediaShareTypeDisplay, SocialMediaShareType, SocialMediaShareActionType, \
     BrightIdNetwork, SocialMediaBrightVerificationStatus
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
 
 
 class SocialMediaVariation(models.Model):
