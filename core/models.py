@@ -57,7 +57,8 @@ class SocialMedia(models.Model):
         choices=SocialMediaBrightVerificationStatus.choices,
         default=SocialMediaBrightVerificationStatus.PENDING
     )
-    variation = models.ForeignKey(SocialMediaVariation, on_delete=models.PROTECT, related_name="social_medias")
+    variation = models.ForeignKey(
+        SocialMediaVariation, on_delete=models.PROTECT, related_name="social_medias")
     profile = models.CharField(max_length=255)
 
     @property

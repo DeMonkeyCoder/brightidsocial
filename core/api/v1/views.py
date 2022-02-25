@@ -7,12 +7,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.api.v1.serializers import SocialMediaCreateOrUpdateSerializer, SocialMediaVariationSerializer
+from core.api.v1.serializers import SocialMediaCreateOrUpdateSerializer,\
+    SocialMediaVariationSerializer
 from core.consts import SocialMediaBrightVerificationStatus
 from core.models import SocialMediaVariation, SocialMedia
 
 
 class SocialMediaVariationListView(generics.ListAPIView):
+    """
+        List social media variations
+    """
     serializer_class = SocialMediaVariationSerializer
     queryset = SocialMediaVariation.objects.all()
 
@@ -33,7 +37,10 @@ class SocialMediaCreateOrUpdateView(generics.GenericAPIView):
             instance = serializer.save()
 
         else:
-            social_media_variation = get_object_or_404(SocialMediaVariation, pk=request.data.get('variation'))
+            social_media_variation = get_object_or_404(
+                SocialMediaVariation,
+                pk=request.data.get('variation')
+            )
 
             with transaction.atomic():
                 social_media_qs = SocialMedia.objects.select_for_update().filter(
@@ -44,10 +51,9 @@ class SocialMediaCreateOrUpdateView(generics.GenericAPIView):
                 )
                 if social_media_qs.exists():
                     return Response({'status': _("Social media already exists")}, status=400)
-                else:
-                    serializer = self.get_serializer(data=request.data)
-                    serializer.is_valid(raise_exception=True)
 
+                serializer = self.get_serializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
                 instance = serializer.save()
 
         return Response(self.get_serializer(instance=instance).data, status=200)
@@ -64,7 +70,8 @@ class SocialMediaVerifyView(APIView):
             social_media = SocialMedia.objects.select_for_update().get(
                 django_user=request.user
             )
-            if social_media.bright_verification_status == SocialMediaBrightVerificationStatus.VERIFIED:
+            if social_media.bright_verification_status == \
+                    SocialMediaBrightVerificationStatus.VERIFIED:
                 return Response(status=204)
             network = social_media.network
             app_name = social_media.variation.bright_id_app_name
@@ -76,6 +83,7 @@ class SocialMediaVerifyView(APIView):
                     return Response(response, 400)
                 social_media.bright_verification_status = SocialMediaBrightVerificationStatus.VERIFIED
                 return Response(status=204)
-            else:
-                return Response({'error': True, 'errorMessage': _('Verification not available for this social media '
-                                                                  'variation')}, 400)
+            return Response({
+                'error': True,
+                'errorMessage': _('Verification not available for this social media variation'
+                                  )}, 400)
