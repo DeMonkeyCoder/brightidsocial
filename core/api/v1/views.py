@@ -3,6 +3,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.api.v1.serializers import SocialMediaCreateOrUpdateSerializer, \
@@ -45,14 +46,15 @@ class SocialMediaCreateOrUpdateView(generics.CreateAPIView):
                     profile=request.data.get('profile'),
                     network=request.data.get('network'),
                     variation=social_media_variation,
-                    bright_verification_status=SocialMediaBrightVerificationStatus.VERIFIED
+                    bright_verification_status=SocialMediaBrightVerificationStatus.VERIFIED,
+                    is_delete=False,
                 )
                 if social_media_qs.exists():
                     return Response({'status': _("Social media already exists")}, status=400)
 
                 serializer = self.get_serializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
-                instance = serializer.save()
+                instance = serializer.save(is_delete=False)
 
         return Response(self.get_serializer(instance=instance).data, status=200)
 
@@ -85,7 +87,8 @@ class SocialMediaVerifyView(generics.GenericAPIView):
                     profile=social_media.profile,
                     network=network,
                     variation=social_media.variation,
-                    bright_verification_status=SocialMediaBrightVerificationStatus.VERIFIED
+                    bright_verification_status=SocialMediaBrightVerificationStatus.VERIFIED,
+                    is_delete=False,
                 )
                 if social_media_qs.exists():
                     return Response({'status': _("Social media already exists")}, status=400)
@@ -104,3 +107,14 @@ class SocialMediaVerifyView(generics.GenericAPIView):
             'error': True,
             'errorMessage': _('Verification not available for this social media variation'
                               )}, 400)
+
+
+class SocialMediaDeleteView(generics.DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user.social_media
+
+    def perform_destroy(self, instance):
+        instance.is_delete = True
+        instance.save()

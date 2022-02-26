@@ -60,6 +60,7 @@ class SocialMedia(models.Model):
     variation = models.ForeignKey(
         SocialMediaVariation, on_delete=models.PROTECT, related_name="social_medias")
     profile = models.CharField(max_length=255)
+    is_delete = models.BooleanField(default=False)
 
     @property
     def token(self):
