@@ -110,6 +110,9 @@ class SocialMediaVerifyView(generics.GenericAPIView):
 
 
 class SocialMediaDeleteView(generics.DestroyAPIView):
+    """
+        Remove social profile of user from search queries
+    """
     permission_classes = (IsAuthenticated,)
 
     def get_object(self):

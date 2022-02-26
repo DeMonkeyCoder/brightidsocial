@@ -27,15 +27,11 @@ class SocialMediaCreateOrUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocialMedia
         fields = (
-            'id',
+            'context_id',
             'token',
             'network',
             'variation',
             'profile',
-        )
-        read_only_fields = (
-            'id',
-            'token',
         )
 
     def create(self, validated_data):

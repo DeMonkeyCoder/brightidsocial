@@ -63,7 +63,17 @@ class SocialMedia(models.Model):
     is_delete = models.BooleanField(default=False)
 
     @property
+    def context_id(self):
+        """
+            Used in BrightID app
+        """
+        return self.id
+
+    @property
     def token(self):
+        """
+            Authentication Token
+        """
         token, created = Token.objects.get_or_create(user=self.django_user)
         return token.key
 
