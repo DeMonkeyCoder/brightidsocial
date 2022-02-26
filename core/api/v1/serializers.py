@@ -3,6 +3,7 @@ import uuid
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
+from core.consts import BrightIdNetwork
 from core.models import SocialMedia, SocialMediaVariation
 
 
@@ -47,3 +48,10 @@ class SocialMediaCreateOrUpdateSerializer(serializers.ModelSerializer):
             django_user=django_user
         )
         return social_media
+
+
+class SocialMediaVerifySerializer(serializers.Serializer):
+    context_id = serializers.UUIDField()
+    network = serializers.ChoiceField(
+        choices=BrightIdNetwork.choices,
+    )
