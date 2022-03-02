@@ -17,7 +17,7 @@ python manage.py runserver
 Also, read the load initial data section
 
 ## Production
-Use guides like this one https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-centos-7 to setup this Django
+Use guides like [this one](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-centos-7) to setup this Django
 project on your server. You can rename `secret-sample.py` to `secret.py` to add your production configurations
 
 ## Load Initial Data
