@@ -145,7 +145,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 try:
-    from .secret import SECRET_KEY, DEBUG, ALLOWED_HOSTS
+    from .secret import SECRET_KEY, DEBUG, ALLOWED_HOSTS, DATABASES
 except ImportError:
     # using default configuration
     pass
