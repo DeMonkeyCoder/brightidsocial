@@ -6,8 +6,8 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from core.api.v1.serializers import SocialMediaCreateOrUpdateSerializer, \
-    SocialMediaVariationSerializer, SocialMediaVerifySerializer
+from core.api.v1.serializers import SocialMediaVariationSerializer, \
+    SocialMediaVerifySerializer, SocialMediaCreateSerializer, SocialMediaUpdateSerializer
 from core.consts import SocialMediaBrightVerificationStatus
 from core.models import SocialMediaVariation, SocialMedia
 
@@ -20,43 +20,22 @@ class SocialMediaVariationListView(generics.ListAPIView):
     queryset = SocialMediaVariation.objects.all()
 
 
-class SocialMediaCreateOrUpdateView(generics.CreateAPIView):
+class SocialMediaCreateView(generics.CreateAPIView):
     """
         Create or Update social media profile
     """
-    serializer_class = SocialMediaCreateOrUpdateSerializer
+    serializer_class = SocialMediaCreateSerializer
 
-    def post(self, request, *args, **kwargs):
 
-        # so the user is updating social media profile
-        if request.user.is_authenticated:
-            social_media = request.user.social_media
-            serializer = self.get_serializer(instance=social_media, data=request.data)
-            serializer.is_valid(raise_exception=True)
-            instance = serializer.save()
+class SocialMediaUpdateView(generics.UpdateAPIView):
+    """
+        Update social profile of user
+    """
+    permission_classes = (IsAuthenticated,)
+    serializer_class = SocialMediaUpdateSerializer
 
-        else:
-            social_media_variation = get_object_or_404(
-                SocialMediaVariation,
-                pk=request.data.get('variation')
-            )
-
-            with transaction.atomic():
-                social_media_qs = SocialMedia.objects.select_for_update().filter(
-                    profile=request.data.get('profile'),
-                    network=request.data.get('network'),
-                    variation=social_media_variation,
-                    bright_verification_status=SocialMediaBrightVerificationStatus.VERIFIED,
-                    is_delete=False,
-                )
-                if social_media_qs.exists():
-                    return Response({'status': _("Social media already exists")}, status=400)
-
-                serializer = self.get_serializer(data=request.data)
-                serializer.is_valid(raise_exception=True)
-                instance = serializer.save(is_delete=False)
-
-        return Response(self.get_serializer(instance=instance).data, status=200)
+    def get_object(self):
+        return self.request.user.social_media
 
 
 class SocialMediaVerifyView(generics.GenericAPIView):
