@@ -29,3 +29,7 @@ python manage.py shell
 from initial_data.initial_social_media import *
     upsert_initial_social_media_variations()
 ```
+## Admin Panel
+use [this guide](https://www.geeksforgeeks.org/how-to-create-superuser-in-django/)
+## Docs
+after `python manage.py runserver` you can go to `http://127.0.0.1:8000/api/docs/swagger/` to see the api documentation
