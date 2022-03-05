@@ -67,7 +67,6 @@ class SocialMediaVerifyView(generics.GenericAPIView):
                     network=network,
                     variation=social_media.variation,
                     bright_verification_status=SocialMediaBrightVerificationStatus.VERIFIED,
-                    is_delete=False,
                 )
                 if social_media_qs.exists():
                     return Response({'status': _("Social media already exists")}, status=400)
@@ -98,5 +97,5 @@ class SocialMediaDeleteView(generics.DestroyAPIView):
         return self.request.user.social_media
 
     def perform_destroy(self, instance):
-        instance.is_delete = True
+        instance.profile = None
         instance.save()

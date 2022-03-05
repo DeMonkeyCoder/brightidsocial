@@ -150,7 +150,7 @@ def get_initial_social_media_variations():
             'id': '9d79c2ec-632c-4a5f-a04f-73d8e06024ec',
             'name': 'Phone Number',
             'icon': None,
-            'type': SocialMediaType.PHONE_NUMBER,
+            'type': SocialMediaType.CONTACT_INFO,
             'share_type': SocialMediaShareType.TELEPHONE,
             'share_type_display': SocialMediaShareTypeDisplay.TELEPHONE,
             'share_action_type': SocialMediaShareActionType.COPY,

@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 
 class SocialMediaType(models.TextChoices):
     SOCIAL_PROFILE = 'so', _('Social Profile')
-    PHONE_NUMBER = 'ph', _('Phone Number')
+    CONTACT_INFO = 'co', _('Contact Info')
 
 
 class SocialMediaShareType(models.TextChoices):
