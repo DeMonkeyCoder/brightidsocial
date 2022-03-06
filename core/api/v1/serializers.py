@@ -59,3 +59,20 @@ class SocialMediaVerifySerializer(serializers.Serializer):
     network = serializers.ChoiceField(
         choices=BrightIdNetwork.choices,
     )
+
+
+class SocialMediaQueryAPISerializer(serializers.Serializer):
+    profiles = serializers.ListField(child=serializers.CharField(max_length=255))
+    network = serializers.ChoiceField(
+        default=BrightIdNetwork.NODE,
+        choices=BrightIdNetwork.choices,
+    )
+
+
+class SocialMediaQueryResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SocialMedia
+        fields = (
+            'profile',
+            'variation'
+        )

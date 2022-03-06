@@ -1,5 +1,9 @@
+from functools import reduce
+from operator import or_
+
 import requests as requests
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from rest_framework import generics
@@ -7,7 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.api.v1.serializers import SocialMediaVariationSerializer, \
-    SocialMediaVerifySerializer, SocialMediaCreateSerializer, SocialMediaUpdateSerializer
+    SocialMediaVerifySerializer, SocialMediaCreateSerializer, SocialMediaUpdateSerializer, \
+    SocialMediaQueryAPISerializer, SocialMediaQueryResponseSerializer
 from core.consts import SocialMediaBrightVerificationStatus
 from core.models import SocialMediaVariation, SocialMedia
 
@@ -99,3 +104,25 @@ class SocialMediaDeleteView(generics.DestroyAPIView):
     def perform_destroy(self, instance):
         instance.profile = None
         instance.save()
+
+
+class SocialMediaQueryView(generics.GenericAPIView):
+    """
+        Find social profiles that are registered in the app
+    """
+    serializer_class = SocialMediaQueryAPISerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        network = serializer.validated_data.get('network')
+        profiles = serializer.validated_data.get('profiles')
+
+        social_media_qs = SocialMedia.objects.filter(
+            reduce(or_, (Q(profile__endswith=profile) for profile in profiles)),
+            network=network,
+            bright_verification_status=SocialMediaBrightVerificationStatus.VERIFIED,
+        )
+
+        return Response(SocialMediaQueryResponseSerializer(social_media_qs, many=True).data, status=200)
