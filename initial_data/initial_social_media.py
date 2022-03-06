@@ -157,6 +157,17 @@ def get_initial_social_media_variations():
             'share_action_data_format': '%%PROFILE%%',
             'bright_id_app_name': 'phoneRegistry',
         },
+        {
+            'id': 'c01bee17-6f89-477f-8cd4-fe5505691a9a',
+            'name': 'Email',
+            'icon': None,
+            'type': SocialMediaType.CONTACT_INFO,
+            'share_type': SocialMediaShareType.EMAIL,
+            'share_type_display': SocialMediaShareTypeDisplay.EMAIL,
+            'share_action_type': SocialMediaShareActionType.COPY,
+            'share_action_data_format': '%%PROFILE%%',
+            'bright_id_app_name': 'emailRegistry',
+        },
     ]
     return social_media_variations
 

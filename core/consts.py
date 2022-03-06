@@ -11,12 +11,14 @@ class SocialMediaShareType(models.TextChoices):
     USERNAME = 'username', _('Username')
     TELEPHONE = 'telephone #', _('Telephone')
     URL = 'url', _('Url')
+    EMAIL = 'email', _('Email')
 
 
 class SocialMediaShareTypeDisplay(models.TextChoices):
     USERNAME = 'username', _('Username')
     TELEPHONE = 'telephone #', _('Telephone')
     URL = 'url', _('Url')
+    EMAIL = 'email', _('Email')
     USERNAME_OR_TELEPHONE = 'username or telephone', _('Username or Telephone')
 
 
