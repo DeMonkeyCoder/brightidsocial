@@ -54,29 +54,6 @@ class SocialMediaCreateSerializer(serializers.ModelSerializer):
         return social_media
 
 
-class SocialMediaCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SocialMedia
-        fields = (
-            'context_id',
-            'token',
-            'network',
-            'variation',
-            'profile',
-        )
-
-    def create(self, validated_data):
-        django_user = User.objects.create_user(
-            # random, with no purpose
-            username=uuid.uuid4().hex[:30]
-        )
-        social_media = SocialMedia.objects.create(
-            **validated_data,
-            django_user=django_user
-        )
-        return social_media
-
-
 class SocialMediaVerifySerializer(serializers.Serializer):
     context_id = serializers.UUIDField()
     network = serializers.ChoiceField(
