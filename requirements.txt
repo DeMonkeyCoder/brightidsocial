@@ -47,7 +47,7 @@ pyparsing==2.4.7
 pytz==2021.1
 requests==2.25.1
 ruamel.yaml==0.16.12
-ruamel.yaml.clib==0.2.2
+ruamel.yaml.clib==0.2.6
 simplejson==3.17.6
 six==1.15.0
 sqlparse==0.4.1
@@ -55,7 +55,7 @@ stack-data==0.2.0
 toml==0.10.2
 tomli==1.2.3
 traitlets==4.3.3
-typed-ast==1.4.2
+typed-ast==1.5.2
 typing_extensions==4.1.1
 uritemplate==3.0.1
 urllib3==1.26.3
