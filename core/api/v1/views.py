@@ -65,27 +65,19 @@ class SocialMediaVerifyView(generics.GenericAPIView):
             return Response(status=204)
 
         app_name = social_media.variation.bright_id_app_name
+
         if app_name:
-            with transaction.atomic():
-                social_media_qs = SocialMedia.objects.select_for_update().filter(
-                    profile=social_media.profile,
-                    network=network,
-                    variation=social_media.variation,
-                    bright_verification_status=SocialMediaBrightVerificationStatus.VERIFIED,
-                )
-                if social_media_qs.exists():
-                    return Response({'status': _("Social media already exists")}, status=400)
+            response = requests.get(
+                f'http://{network}.brightid.org/brightid/'
+                f'v6/verifications/{app_name}/{social_media.id}'
+            ).json()
+            if 'error' in response:
+                return Response(response, 400)
 
-                response = requests.get(
-                    f'http://{network}.brightid.org/brightid/'
-                    f'v6/verifications/{app_name}/{social_media.id}'
-                ).json()
-                if 'error' in response:
-                    return Response(response, 400)
+            social_media.bright_verification_status = \
+                SocialMediaBrightVerificationStatus.VERIFIED
+            return Response(status=204)
 
-                social_media.bright_verification_status = \
-                    SocialMediaBrightVerificationStatus.VERIFIED
-                return Response(status=204)
         return Response({
             'error': True,
             'errorMessage': _('Verification not available for this social media variation'
