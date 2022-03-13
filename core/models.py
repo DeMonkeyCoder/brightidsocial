@@ -83,7 +83,7 @@ class SocialMedia(models.Model):
         return token.key
 
     def __str__(self):
-        return self.variation.name + ' ' + self.context_id
+        return self.variation.name + ' ' + str(self.context_id)
 
 
 class ProfileHash(models.Model):
