@@ -79,4 +79,4 @@ class SocialMedia(models.Model):
         return token.key
 
     def __str__(self):
-        return self.variation.name + ' ' + self.profile
+        return self.variation.name + ' ' + str(self.profile)
