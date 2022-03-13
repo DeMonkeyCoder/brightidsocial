@@ -4,11 +4,15 @@ from django.contrib.auth.models import User
 from django.db import models
 from rest_framework.authtoken.models import Token
 
-from core.consts import SocialMediaType, SocialMediaShareTypeDisplay, SocialMediaShareType, SocialMediaShareActionType, \
+from core.consts import SocialMediaType, SocialMediaShareTypeDisplay, \
+    SocialMediaShareType, SocialMediaShareActionType, \
     BrightIdNetwork, SocialMediaBrightVerificationStatus
 
 
 class SocialMediaVariation(models.Model):
+    """
+        Social Media types and platforms that we support.
+    """
     id = models.UUIDField(primary_key=True)
     name = models.CharField(max_length=255)
     icon = models.TextField(blank=True, null=True)
@@ -45,6 +49,9 @@ class SocialMediaVariation(models.Model):
 
 
 class SocialMedia(models.Model):
+    """
+        A social media profile that the user added
+    """
     id = models.UUIDField(primary_key=True, default=uuid4)
     django_user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="social_media")
     network = models.CharField(
@@ -59,9 +66,6 @@ class SocialMedia(models.Model):
     )
     variation = models.ForeignKey(
         SocialMediaVariation, on_delete=models.PROTECT, related_name="social_medias")
-
-    # When user deletes his profile, this field becomes null
-    profile = models.CharField(max_length=255, null=True)
 
     @property
     def context_id(self):
@@ -79,4 +83,24 @@ class SocialMedia(models.Model):
         return token.key
 
     def __str__(self):
-        return self.variation.name + ' ' + self.profile
+        return self.variation.name + ' ' + self.context_id
+
+
+class ProfileHash(models.Model):
+    """
+        Hash of different profile representations.
+        For example, a user might save a phone number with or without
+        the country code in their contacts. So we store the hash value from
+        both representations
+    """
+    social_media = models.ForeignKey(
+        SocialMedia, on_delete=models.CASCADE, related_name='profile_hashes')
+    value = models.CharField(max_length=32)
+
+    @property
+    def profile_hash(self):
+        return self.value
+
+    @property
+    def variation(self):
+        return self.social_media.variation

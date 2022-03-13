@@ -14,7 +14,7 @@ from core.api.v1.serializers import SocialMediaVariationSerializer, \
     SocialMediaVerifySerializer, SocialMediaCreateSerializer, SocialMediaUpdateSerializer, \
     SocialMediaQueryAPISerializer, SocialMediaQueryResponseSerializer
 from core.consts import SocialMediaBrightVerificationStatus
-from core.models import SocialMediaVariation, SocialMedia
+from core.models import SocialMediaVariation, SocialMedia, ProfileHash
 
 
 class SocialMediaVariationListView(generics.ListAPIView):
@@ -94,8 +94,7 @@ class SocialMediaDeleteView(generics.DestroyAPIView):
         return self.request.user.social_media
 
     def perform_destroy(self, instance):
-        instance.profile = None
-        instance.save()
+        instance.profile_hashes.delete()
 
 
 class SocialMediaQueryView(generics.GenericAPIView):
@@ -109,12 +108,12 @@ class SocialMediaQueryView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         network = serializer.validated_data.get('network')
-        profiles = serializer.validated_data.get('profiles')
+        profile_hashes = serializer.validated_data.get('profile_hashes')
 
-        social_media_qs = SocialMedia.objects.filter(
-            reduce(or_, (Q(profile__endswith=profile) for profile in profiles)),
-            network=network,
-            bright_verification_status=SocialMediaBrightVerificationStatus.VERIFIED,
+        profile_hash_qs = ProfileHash.objects.filter(
+            value__in=profile_hashes,
+            social_media_network=network,
+            social_media_bright_verification_status=SocialMediaBrightVerificationStatus.VERIFIED,
         )
 
-        return Response(SocialMediaQueryResponseSerializer(social_media_qs, many=True).data, status=200)
+        return Response(SocialMediaQueryResponseSerializer(profile_hash_qs, many=True).data, status=200)

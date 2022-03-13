@@ -1,10 +1,11 @@
 import uuid
 
 from django.contrib.auth.models import User
+from django.db import transaction
 from rest_framework import serializers
 
 from core.consts import BrightIdNetwork
-from core.models import SocialMedia, SocialMediaVariation
+from core.models import SocialMedia, SocialMediaVariation, ProfileHash
 
 
 class SocialMediaVariationSerializer(serializers.ModelSerializer):
@@ -24,14 +25,30 @@ class SocialMediaVariationSerializer(serializers.ModelSerializer):
 
 
 class SocialMediaUpdateSerializer(serializers.ModelSerializer):
+    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=32))
+
     class Meta:
         model = SocialMedia
         fields = (
-            'profile',
+            'profile_hashes',
         )
+
+    def update(self, instance, validated_data):
+        with transaction.atomic():
+            profile_hashes = validated_data.pop('profile_hashes')
+            instance.profile_hashes.delete()
+            for value in profile_hashes:
+                ProfileHash.objects.create(
+                    social_media=instance,
+                    value=value
+                )
+            instance.save()
+        return instance
 
 
 class SocialMediaCreateSerializer(serializers.ModelSerializer):
+    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=32))
+
     class Meta:
         model = SocialMedia
         fields = (
@@ -39,19 +56,26 @@ class SocialMediaCreateSerializer(serializers.ModelSerializer):
             'token',
             'network',
             'variation',
-            'profile',
+            'profile_hashes',
         )
 
     def create(self, validated_data):
-        django_user = User.objects.create_user(
-            # random, with no purpose
-            username=uuid.uuid4().hex[:30]
-        )
-        social_media = SocialMedia.objects.create(
-            **validated_data,
-            django_user=django_user
-        )
-        return social_media
+        with transaction.atomic():
+            profile_hashes = validated_data.pop('profile_hashes')
+            django_user = User.objects.create_user(
+                # random, with no purpose
+                username=uuid.uuid4().hex[:30]
+            )
+            instance = SocialMedia.objects.create(
+                **validated_data,
+                django_user=django_user
+            )
+            for value in profile_hashes:
+                ProfileHash.objects.create(
+                    social_media=instance,
+                    value=value
+                )
+        return instance
 
 
 class SocialMediaVerifySerializer(serializers.Serializer):
@@ -62,7 +86,7 @@ class SocialMediaVerifySerializer(serializers.Serializer):
 
 
 class SocialMediaQueryAPISerializer(serializers.Serializer):
-    profiles = serializers.ListField(child=serializers.CharField(max_length=255))
+    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=255))
     network = serializers.ChoiceField(
         default=BrightIdNetwork.NODE,
         choices=BrightIdNetwork.choices,
@@ -71,8 +95,8 @@ class SocialMediaQueryAPISerializer(serializers.Serializer):
 
 class SocialMediaQueryResponseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SocialMedia
+        model = ProfileHash
         fields = (
-            'profile',
+            'profile_hash',
             'variation'
         )
