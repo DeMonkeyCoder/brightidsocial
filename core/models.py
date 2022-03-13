@@ -104,3 +104,6 @@ class ProfileHash(models.Model):
     @property
     def variation(self):
         return self.social_media.variation
+
+    def __str__(self):
+        return self.value
