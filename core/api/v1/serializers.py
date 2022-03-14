@@ -25,7 +25,7 @@ class SocialMediaVariationSerializer(serializers.ModelSerializer):
 
 
 class SocialMediaUpdateSerializer(serializers.ModelSerializer):
-    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=32))
+    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=32), write_only=True)
 
     class Meta:
         model = SocialMedia
@@ -36,7 +36,7 @@ class SocialMediaUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         with transaction.atomic():
             profile_hashes = validated_data.pop('profile_hashes')
-            instance.profile_hashes.all().delete()
+            instance.profile_hashes.delete()
             for value in profile_hashes:
                 ProfileHash.objects.create(
                     social_media=instance,
@@ -47,7 +47,7 @@ class SocialMediaUpdateSerializer(serializers.ModelSerializer):
 
 
 class SocialMediaCreateSerializer(serializers.ModelSerializer):
-    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=32))
+    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=32), write_only=True)
 
     class Meta:
         model = SocialMedia
@@ -58,6 +58,7 @@ class SocialMediaCreateSerializer(serializers.ModelSerializer):
             'variation',
             'profile_hashes',
         )
+
 
     def create(self, validated_data):
         with transaction.atomic():
