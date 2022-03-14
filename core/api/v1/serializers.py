@@ -36,7 +36,7 @@ class SocialMediaUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         with transaction.atomic():
             profile_hashes = validated_data.pop('profile_hashes')
-            instance.profile_hashes.delete()
+            instance.profile_hashes.all().delete()
             for value in profile_hashes:
                 ProfileHash.objects.create(
                     social_media=instance,
