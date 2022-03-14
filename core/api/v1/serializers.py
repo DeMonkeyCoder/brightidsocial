@@ -85,8 +85,13 @@ class SocialMediaVerifySerializer(serializers.Serializer):
     )
 
 
-class SocialMediaQueryAPISerializer(serializers.Serializer):
+class SocialMediaQueryDataByVariation(serializers.Serializer):
+    variation = serializers.UUIDField()
     profile_hashes = serializers.ListField(child=serializers.CharField(max_length=255))
+
+
+class SocialMediaQueryAPISerializer(serializers.Serializer):
+    profile_hashes = serializers.ListField(child=SocialMediaQueryDataByVariation())
     network = serializers.ChoiceField(
         default=BrightIdNetwork.NODE,
         choices=BrightIdNetwork.choices,

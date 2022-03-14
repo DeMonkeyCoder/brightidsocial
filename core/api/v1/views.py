@@ -105,15 +105,16 @@ class SocialMediaQueryView(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
+
         serializer.is_valid(raise_exception=True)
 
         network = serializer.validated_data.get('network')
         profile_hashes = serializer.validated_data.get('profile_hashes')
 
-        profile_hash_qs = ProfileHash.objects.filter(
+        filtered_profile_hashes = ProfileHash.objects.filter(
             value__in=profile_hashes,
-            social_media_network=network,
-            social_media_bright_verification_status=SocialMediaBrightVerificationStatus.VERIFIED,
-        )
+            social_media__network=network,
+            social_media__bright_verification_status=SocialMediaBrightVerificationStatus.VERIFIED,
+        ).values_list('value', flat=True).distinct()
 
-        return Response(SocialMediaQueryResponseSerializer(profile_hash_qs, many=True).data, status=200)
+        return Response(list(filtered_profile_hashes), status=200)
