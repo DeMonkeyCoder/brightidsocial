@@ -133,7 +133,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.USERNAME,
             'share_action_type': SocialMediaShareActionType.OPEN_LINK,
             'share_action_data_format': 'https://twitter.com/%%PROFILE%%/',
-            'bright_id_app_name': None,
+            'bright_id_app_name': 'twitterRegistry',
         },
         {
             'id': '283ade8a-6ef1-4d38-a744-70ee2f478ba4',
