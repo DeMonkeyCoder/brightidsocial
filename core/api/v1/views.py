@@ -94,7 +94,7 @@ class SocialMediaDeleteView(generics.DestroyAPIView):
         return self.request.user.social_media
 
     def perform_destroy(self, instance):
-        instance.profile_hashes.delete()
+        instance.profile_hashes.all().delete()
 
 
 class SocialMediaQueryView(generics.GenericAPIView):
