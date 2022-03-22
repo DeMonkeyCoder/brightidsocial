@@ -107,3 +107,6 @@ class ProfileHash(models.Model):
 
     def __str__(self):
         return self.value
+
+    class Meta:
+        indexes = [models.Index(fields=['value'])]
