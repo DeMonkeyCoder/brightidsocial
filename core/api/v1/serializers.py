@@ -25,7 +25,7 @@ class SocialMediaVariationSerializer(serializers.ModelSerializer):
 
 
 class SocialMediaUpdateSerializer(serializers.ModelSerializer):
-    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=32), write_only=True)
+    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=32), write_only=True, max_length=3)
 
     class Meta:
         model = SocialMedia
@@ -47,7 +47,7 @@ class SocialMediaUpdateSerializer(serializers.ModelSerializer):
 
 
 class SocialMediaCreateSerializer(serializers.ModelSerializer):
-    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=32), write_only=True)
+    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=32), write_only=True, max_length=3)
 
     class Meta:
         model = SocialMedia
