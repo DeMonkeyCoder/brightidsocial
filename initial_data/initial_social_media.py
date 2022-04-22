@@ -2,6 +2,21 @@ from core.consts import SocialMediaType, SocialMediaShareTypeDisplay, SocialMedi
 from core.models import SocialMediaVariation
 
 
+class SocialMediaVariationIds:
+    DISCORD = 'fab9a32f-e968-495e-807f-7f1b27642506'
+    INSTAGRAM = 'efc5e269-195b-47e8-8634-b1899c00df9b'
+    KEYBASE = '607223cc-7fbc-4b44-a595-e84d62146f30'
+    LINKEDIN = 'd750bd42-e2d3-465f-a3fd-40fde0080022'
+    MEDIUM = '50ea1e56-f53b-4fa9-bbcb-846a3f3ac7b6'
+    REDDIT = '65a174ff-b823-4abd-9dbb-ae0f46f7bc53'
+    SIGNAL = '0e92b39b-e1b5-4236-be40-7377aadca4db'
+    TELEGRAM = '4fc96842-0d3d-40ba-bb39-1aaf59a48a59'
+    TWITTER = 'a8b188b1-f9f9-416d-b002-7b7faf6e2d41'
+    WHATSAPP = '283ade8a-6ef1-4d38-a744-70ee2f478ba4'
+    PHONE_NUMBER = '9d79c2ec-632c-4a5f-a04f-73d8e06024ec'
+    EMAIL = 'c01bee17-6f89-477f-8cd4-fe5505691a9a'
+
+
 def get_initial_social_media_variations():
     directory = 'initial_data/icons/'
     f = open(directory + 'icons8-reddit.svg', 'r')
@@ -37,7 +52,7 @@ def get_initial_social_media_variations():
 
     social_media_variations = [
         {
-            'id': 'fab9a32f-e968-495e-807f-7f1b27642506',
+            'id': SocialMediaVariationIds.DISCORD,
             'name': 'Discord',
             'icon': discord_icon,
             'type': SocialMediaType.SOCIAL_PROFILE,
@@ -48,7 +63,7 @@ def get_initial_social_media_variations():
             'bright_id_app_name': None,
         },
         {
-            'id': 'efc5e269-195b-47e8-8634-b1899c00df9b',
+            'id': SocialMediaVariationIds.INSTAGRAM,
             'name': 'Instagram',
             'icon': instagram_icon,
             'type': SocialMediaType.SOCIAL_PROFILE,
@@ -59,7 +74,7 @@ def get_initial_social_media_variations():
             'bright_id_app_name': None,
         },
         {
-            'id': '607223cc-7fbc-4b44-a595-e84d62146f30',
+            'id': SocialMediaVariationIds.KEYBASE,
             'name': 'Keybase',
             'icon': keybase_icon,
             'type': SocialMediaType.SOCIAL_PROFILE,
@@ -70,7 +85,7 @@ def get_initial_social_media_variations():
             'bright_id_app_name': None,
         },
         {
-            'id': 'd750bd42-e2d3-465f-a3fd-40fde0080022',
+            'id': SocialMediaVariationIds.LINKEDIN,
             'name': 'LinkedIn',
             'icon': linkedin_icon,
             'type': SocialMediaType.SOCIAL_PROFILE,
@@ -81,7 +96,7 @@ def get_initial_social_media_variations():
             'bright_id_app_name': None,
         },
         {
-            'id': '50ea1e56-f53b-4fa9-bbcb-846a3f3ac7b6',
+            'id': SocialMediaVariationIds.MEDIUM,
             'name': 'Medium',
             'icon': medium_icon,
             'type': SocialMediaType.SOCIAL_PROFILE,
@@ -92,7 +107,7 @@ def get_initial_social_media_variations():
             'bright_id_app_name': None,
         },
         {
-            'id': '65a174ff-b823-4abd-9dbb-ae0f46f7bc53',
+            'id': SocialMediaVariationIds.REDDIT,
             'name': 'Reddit',
             'icon': reddit_icon,
             'type': SocialMediaType.SOCIAL_PROFILE,
@@ -103,7 +118,7 @@ def get_initial_social_media_variations():
             'bright_id_app_name': None,
         },
         {
-            'id': '0e92b39b-e1b5-4236-be40-7377aadca4db',
+            'id': SocialMediaVariationIds.SIGNAL,
             'name': 'Signal',
             'icon': signal_icon,
             'type': SocialMediaType.SOCIAL_PROFILE,
@@ -114,7 +129,7 @@ def get_initial_social_media_variations():
             'bright_id_app_name': None,
         },
         {
-            'id': '4fc96842-0d3d-40ba-bb39-1aaf59a48a59',
+            'id': SocialMediaVariationIds.TELEGRAM,
             'name': 'Telegram',
             'icon': telegram_icon,
             'type': SocialMediaType.SOCIAL_PROFILE,
@@ -125,7 +140,7 @@ def get_initial_social_media_variations():
             'bright_id_app_name': None,
         },
         {
-            'id': 'a8b188b1-f9f9-416d-b002-7b7faf6e2d41',
+            'id': SocialMediaVariationIds.TWITTER,
             'name': 'Twitter',
             'icon': twitter_icon,
             'type': SocialMediaType.SOCIAL_PROFILE,
@@ -136,7 +151,7 @@ def get_initial_social_media_variations():
             'bright_id_app_name': 'twitterRegistry',
         },
         {
-            'id': '283ade8a-6ef1-4d38-a744-70ee2f478ba4',
+            'id': SocialMediaVariationIds.WHATSAPP,
             'name': 'Whatsapp',
             'icon': whatsapp_icon,
             'type': SocialMediaType.SOCIAL_PROFILE,
@@ -147,7 +162,7 @@ def get_initial_social_media_variations():
             'bright_id_app_name': None,
         },
         {
-            'id': '9d79c2ec-632c-4a5f-a04f-73d8e06024ec',
+            'id': SocialMediaVariationIds.PHONE_NUMBER,
             'name': 'Phone Number',
             'icon': None,
             'type': SocialMediaType.CONTACT_INFO,
@@ -158,7 +173,7 @@ def get_initial_social_media_variations():
             'bright_id_app_name': 'phoneRegistry',
         },
         {
-            'id': 'c01bee17-6f89-477f-8cd4-fe5505691a9a',
+            'id': SocialMediaVariationIds.EMAIL,
             'name': 'Email',
             'icon': None,
             'type': SocialMediaType.CONTACT_INFO,
