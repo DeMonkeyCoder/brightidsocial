@@ -21,7 +21,7 @@ class SocialMediaVariationSerializer(serializers.ModelSerializer):
             'share_type_display',
             'share_action_type',
             'share_action_data_format',
-            'bright_id_app_name',
+            'bright_id_app_id',
         )
 
 

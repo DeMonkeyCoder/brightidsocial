@@ -1,18 +1,12 @@
-from functools import reduce
-from operator import or_
-
-import requests as requests
-from django.db import transaction
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext as _
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.api.v1.serializers import SocialMediaVariationSerializer, \
     SocialMediaVerifySerializer, SocialMediaCreateSerializer, SocialMediaUpdateSerializer, \
-    SocialMediaQueryAPISerializer, SocialMediaQueryResponseSerializer
+    SocialMediaQueryAPISerializer
+from core.bright_utils import is_user_app_id_linked
 from core.consts import SocialMediaBrightVerificationStatus
 from core.models import SocialMediaVariation, SocialMedia, ProfileHash
 
@@ -59,29 +53,10 @@ class SocialMediaVerifyView(generics.GenericAPIView):
                                          id=context_id,
                                          network=network
                                          )
-
-        if social_media.bright_verification_status == \
-                SocialMediaBrightVerificationStatus.VERIFIED:
+        result, response = social_media.get_and_save_verification_status(is_user_app_id_linked)
+        if result:
             return Response(status=204)
-
-        app_name = social_media.variation.bright_id_app_name
-
-        if app_name:
-            response = requests.get(
-                f'http://{network}.brightid.org/brightid/'
-                f'v6/verifications/{app_name}/{social_media.id}'
-            ).json()
-            if 'error' in response:
-                return Response(response, 400)
-
-            social_media.bright_verification_status = \
-                SocialMediaBrightVerificationStatus.VERIFIED
-            return Response(status=204)
-
-        return Response({
-            'error': True,
-            'errorMessage': _('Verification not available for this social media variation'
-                              )}, 400)
+        return Response(response, status=400)
 
 
 class SocialMediaDeleteView(generics.DestroyAPIView):

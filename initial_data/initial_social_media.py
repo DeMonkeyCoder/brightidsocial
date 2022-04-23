@@ -60,7 +60,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.USERNAME,
             'share_action_type': SocialMediaShareActionType.COPY,
             'share_action_data_format': '%%PROFILE%%',
-            'bright_id_app_name': None,
+            'bright_id_app_id': None,
         },
         {
             'id': SocialMediaVariationIds.INSTAGRAM,
@@ -71,7 +71,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.USERNAME,
             'share_action_type': SocialMediaShareActionType.OPEN_LINK,
             'share_action_data_format': 'https://instagram.com/%%PROFILE%%/',
-            'bright_id_app_name': None,
+            'bright_id_app_id': None,
         },
         {
             'id': SocialMediaVariationIds.KEYBASE,
@@ -82,7 +82,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.USERNAME,
             'share_action_type': SocialMediaShareActionType.OPEN_LINK,
             'share_action_data_format': 'https://keybase.io/%%PROFILE%%/',
-            'bright_id_app_name': None,
+            'bright_id_app_id': None,
         },
         {
             'id': SocialMediaVariationIds.LINKEDIN,
@@ -93,7 +93,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.URL,
             'share_action_type': SocialMediaShareActionType.OPEN_LINK,
             'share_action_data_format': 'https://www.linkedin.com/in/%%PROFILE%%/',
-            'bright_id_app_name': None,
+            'bright_id_app_id': None,
         },
         {
             'id': SocialMediaVariationIds.MEDIUM,
@@ -104,7 +104,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.URL,
             'share_action_type': SocialMediaShareActionType.OPEN_LINK,
             'share_action_data_format': '%%PROFILE%%',
-            'bright_id_app_name': None,
+            'bright_id_app_id': None,
         },
         {
             'id': SocialMediaVariationIds.REDDIT,
@@ -115,7 +115,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.USERNAME,
             'share_action_type': SocialMediaShareActionType.OPEN_LINK,
             'share_action_data_format': 'https://www.reddit.com/user/%%PROFILE%%/',
-            'bright_id_app_name': None,
+            'bright_id_app_id': None,
         },
         {
             'id': SocialMediaVariationIds.SIGNAL,
@@ -126,7 +126,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.TELEPHONE,
             'share_action_type': SocialMediaShareActionType.OPEN_LINK,
             'share_action_data_format': '%%PROFILE%%',
-            'bright_id_app_name': None,
+            'bright_id_app_id': None,
         },
         {
             'id': SocialMediaVariationIds.TELEGRAM,
@@ -137,7 +137,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.USERNAME_OR_TELEPHONE,
             'share_action_type': SocialMediaShareActionType.COPY_IF_PHONE_LINK_IF_USERNAME,
             'share_action_data_format': 'https://t.me/%%PROFILE%%/',
-            'bright_id_app_name': None,
+            'bright_id_app_id': None,
         },
         {
             'id': SocialMediaVariationIds.TWITTER,
@@ -148,7 +148,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.USERNAME,
             'share_action_type': SocialMediaShareActionType.OPEN_LINK,
             'share_action_data_format': 'https://twitter.com/%%PROFILE%%/',
-            'bright_id_app_name': 'twitterRegistry',
+            'bright_id_app_id': 'twitterRegistry',
         },
         {
             'id': SocialMediaVariationIds.WHATSAPP,
@@ -159,7 +159,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.TELEPHONE,
             'share_action_type': SocialMediaShareActionType.OPEN_LINK,
             'share_action_data_format': 'https://wa.me/%%PROFILE%%/',
-            'bright_id_app_name': None,
+            'bright_id_app_id': None,
         },
         {
             'id': SocialMediaVariationIds.PHONE_NUMBER,
@@ -170,7 +170,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.TELEPHONE,
             'share_action_type': SocialMediaShareActionType.COPY,
             'share_action_data_format': '%%PROFILE%%',
-            'bright_id_app_name': 'phoneRegistry',
+            'bright_id_app_id': 'phoneRegistry',
         },
         {
             'id': SocialMediaVariationIds.EMAIL,
@@ -181,7 +181,7 @@ def get_initial_social_media_variations():
             'share_type_display': SocialMediaShareTypeDisplay.EMAIL,
             'share_action_type': SocialMediaShareActionType.COPY,
             'share_action_data_format': '%%PROFILE%%',
-            'bright_id_app_name': 'emailRegistry',
+            'bright_id_app_id': 'emailRegistry',
         },
     ]
     return social_media_variations

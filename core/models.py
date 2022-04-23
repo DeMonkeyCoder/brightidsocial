@@ -1,7 +1,10 @@
+from typing import Callable
 from uuid import uuid4
+from xmlrpc.client import Boolean
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.translation import gettext as _
 from rest_framework.authtoken.models import Token
 
 from core.consts import SocialMediaType, SocialMediaShareTypeDisplay, \
@@ -42,7 +45,7 @@ class SocialMediaVariation(models.Model):
     )
 
     share_action_data_format = models.CharField(max_length=100)
-    bright_id_app_name = models.CharField(max_length=50, blank=True, null=True)
+    bright_id_app_id = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -84,6 +87,28 @@ class SocialMedia(models.Model):
 
     def __str__(self):
         return self.variation.name + ' ' + str(self.context_id)
+
+    def get_and_save_verification_status(self, is_user_app_id_linked_func: Callable) -> (Boolean, dict):
+        if self.bright_verification_status == SocialMediaBrightVerificationStatus.VERIFIED:
+            return True, {}
+
+        app_name = self.variation.bright_id_app_id
+        if not app_name:
+            response = {
+                'error': True,
+                'errorMessage': _('Verification not available for this social media variation'
+                                  )}
+            return False, response
+
+        network = self.network
+        user_app_id = self.context_id
+        response = is_user_app_id_linked_func(network, app_name, user_app_id)
+        if 'error' in response:
+            return False, response
+
+        self.bright_verification_status = SocialMediaBrightVerificationStatus.VERIFIED
+        self.save()
+        return True, {}
 
 
 class ProfileHash(models.Model):
