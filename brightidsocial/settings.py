@@ -144,6 +144,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# We need at least 3 hashes to support different phone number formats
+ALLOWED_HASH_COUNT = 3
+
 try:
     from .secret import SECRET_KEY, DEBUG, ALLOWED_HOSTS, DATABASES
 except ImportError:

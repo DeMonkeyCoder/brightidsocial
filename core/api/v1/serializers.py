@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from rest_framework import serializers
 
+from brightidsocial.settings import ALLOWED_HASH_COUNT
 from core.consts import BrightIdNetwork
 from core.models import SocialMedia, SocialMediaVariation, ProfileHash
 
@@ -25,7 +26,7 @@ class SocialMediaVariationSerializer(serializers.ModelSerializer):
 
 
 class SocialMediaUpdateSerializer(serializers.ModelSerializer):
-    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=32), write_only=True, max_length=3)
+    profile_hashes = serializers.ListField(child=serializers.CharField(max_length=32), write_only=True, max_length=ALLOWED_HASH_COUNT)
 
     class Meta:
         model = SocialMedia
