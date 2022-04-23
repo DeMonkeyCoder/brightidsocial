@@ -63,26 +63,6 @@ class TestUtilsMixin:
     def is_user_app_id_linked_none_stub(_network, _app_id, _user_app_id):
         pass
 
-class ListSocialMediaVariationsV1(APITestCase, TestUtilsMixin):
-
-    @classmethod
-    def setUpTestData(cls):
-        upsert_initial_social_media_variations()
-
-    def test_list_variations(self):
-        SocialMediaVariation.objects.get(id=SocialMediaVariationIds.DISCORD)
-        SocialMediaVariation.objects.get(id=SocialMediaVariationIds.INSTAGRAM)
-        SocialMediaVariation.objects.get(id=SocialMediaVariationIds.KEYBASE)
-        SocialMediaVariation.objects.get(id=SocialMediaVariationIds.LINKEDIN)
-        SocialMediaVariation.objects.get(id=SocialMediaVariationIds.MEDIUM)
-        SocialMediaVariation.objects.get(id=SocialMediaVariationIds.REDDIT)
-        SocialMediaVariation.objects.get(id=SocialMediaVariationIds.SIGNAL)
-        SocialMediaVariation.objects.get(id=SocialMediaVariationIds.TELEGRAM)
-        SocialMediaVariation.objects.get(id=SocialMediaVariationIds.TWITTER)
-        SocialMediaVariation.objects.get(id=SocialMediaVariationIds.WHATSAPP)
-        SocialMediaVariation.objects.get(id=SocialMediaVariationIds.PHONE_NUMBER)
-        SocialMediaVariation.objects.get(id=SocialMediaVariationIds.EMAIL)
-
 
 class CreateSocialMediaV1(APITestCase, TestUtilsMixin):
 
@@ -203,7 +183,6 @@ class VerifySocialMediaV1(APITestCase, TestUtilsMixin):
             social_media.bright_verification_status,
             SocialMediaBrightVerificationStatus.PENDING
         )
-
 
         result, _ = social_media.get_and_save_verification_status(self.is_user_app_id_linked_false_stub)
         self.assertEqual(result, False)
