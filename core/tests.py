@@ -18,15 +18,19 @@ class TestUtilsMixin:
     check_verification_endpoint = reverse("social-media-check-verification")
     query_endpoint = reverse("social-media-query")
 
-    def create_social_media(self, network, variation):
+    def create_social_media(self, network, variation, profile_hashes):
         response = self.client.post(self.create_endpoint, data={
             'network': network,
             'variation': variation.pk,
-            'profileHashes': [
-                '96fc9552cde1e133bd039e6b70d5aa09',
-            ]
+            'profileHashes': profile_hashes
         })
         return response
+
+    def create_social_media_with_one_hash(self, network, variation):
+        profile_hashes = [
+            '96fc9552cde1e133bd039e6b70d5aa09',
+        ]
+        return self.create_social_media(network, variation, profile_hashes)
 
     def assert_valid_social_media_create_response(self, response, network, variation):
         self.assertEqual(response.status_code, 201)
@@ -46,6 +50,18 @@ class TestUtilsMixin:
     def generate_random_hash():
         return "%032x" % random.getrandbits(128)
 
+    @staticmethod
+    def is_user_app_id_linked_true_stub(_network, _app_id, _user_app_id):
+        # Object with no error attribute
+        return {}
+
+    @staticmethod
+    def is_user_app_id_linked_false_stub(_network, _app_id, _user_app_id):
+        return {'error': 'some error'}
+
+    @staticmethod
+    def is_user_app_id_linked_none_stub(_network, _app_id, _user_app_id):
+        pass
 
 class ListSocialMediaVariationsV1(APITestCase, TestUtilsMixin):
 
@@ -77,13 +93,13 @@ class CreateSocialMediaV1(APITestCase, TestUtilsMixin):
     def test_create_social_media(self):
         variation = SocialMediaVariation.objects.get(id=SocialMediaVariationIds.TELEGRAM)
         network = BrightIdNetwork.NODE
-        response = self.create_social_media(network, variation)
+        response = self.create_social_media_with_one_hash(network, variation)
         self.assert_valid_social_media_create_response(response, network, variation)
 
     def test_create_test_network_social_media(self):
         variation = SocialMediaVariation.objects.get(id=SocialMediaVariationIds.PHONE_NUMBER)
         network = BrightIdNetwork.TEST
-        response = self.create_social_media(network, variation)
+        response = self.create_social_media_with_one_hash(network, variation)
         self.assert_valid_social_media_create_response(response, network, variation)
 
     def test_cannot_create_social_media_with_more_than_allowed_hashes(self):
@@ -120,7 +136,7 @@ class UpdateSocialMediaV1(APITestCase, TestUtilsMixin):
     def test_update_social_media(self):
         variation = SocialMediaVariation.objects.get(id=SocialMediaVariationIds.TELEGRAM)
         network = BrightIdNetwork.NODE
-        create_response = self.create_social_media(network, variation)
+        create_response = self.create_social_media_with_one_hash(network, variation)
         new_profile_hashes = [
             '2160ec425e3344ba53f867fde461e6ee',
             '500cd23b415cd92421b5272ddc40b910',
@@ -133,7 +149,7 @@ class UpdateSocialMediaV1(APITestCase, TestUtilsMixin):
     def test_cannot_update_social_media_with_more_than_allowed_hashes(self):
         variation = SocialMediaVariation.objects.get(id=SocialMediaVariationIds.TELEGRAM)
         network = BrightIdNetwork.NODE
-        create_response = self.create_social_media(network, variation)
+        create_response = self.create_social_media_with_one_hash(network, variation)
         social_media = self.extract_social_media_object_from_create_response(create_response)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + social_media.token)
 
@@ -162,7 +178,7 @@ class DeleteSocialMediaV1(APITestCase, TestUtilsMixin):
     def test_delete_social_media(self):
         variation = SocialMediaVariation.objects.get(id=SocialMediaVariationIds.TELEGRAM)
         network = BrightIdNetwork.NODE
-        create_response = self.create_social_media(network, variation)
+        create_response = self.create_social_media_with_one_hash(network, variation)
 
         social_media = self.extract_social_media_object_from_create_response(create_response)
         delete_response = self.delete_social_media(social_media.token)
@@ -179,7 +195,7 @@ class VerifySocialMediaV1(APITestCase, TestUtilsMixin):
         variation = SocialMediaVariation.objects.get(id=SocialMediaVariationIds.PHONE_NUMBER)
         network = BrightIdNetwork.NODE
 
-        create_response = self.create_social_media(network, variation)
+        create_response = self.create_social_media_with_one_hash(network, variation)
 
         social_media = self.extract_social_media_object_from_create_response(create_response)
 
@@ -188,21 +204,15 @@ class VerifySocialMediaV1(APITestCase, TestUtilsMixin):
             SocialMediaBrightVerificationStatus.PENDING
         )
 
-        def is_user_app_id_linked_false_stub(_network, _app_id, _user_app_id):
-            return {'error': 'some error'}
 
-        result, _ = social_media.get_and_save_verification_status(is_user_app_id_linked_false_stub)
+        result, _ = social_media.get_and_save_verification_status(self.is_user_app_id_linked_false_stub)
         self.assertEqual(result, False)
         self.assertEqual(
             social_media.bright_verification_status,
             SocialMediaBrightVerificationStatus.PENDING
         )
 
-        def is_user_app_id_linked_true_stub(_network, _app_id, _user_app_id):
-            # Object with no error attribute
-            return {}
-
-        result, _ = social_media.get_and_save_verification_status(is_user_app_id_linked_true_stub)
+        result, _ = social_media.get_and_save_verification_status(self.is_user_app_id_linked_true_stub)
         self.assertEqual(result, True)
         self.assertEqual(
             social_media.bright_verification_status,
@@ -213,7 +223,7 @@ class VerifySocialMediaV1(APITestCase, TestUtilsMixin):
         variation = SocialMediaVariation.objects.create(id=uuid.uuid4())
         network = BrightIdNetwork.NODE
 
-        create_response = self.create_social_media(network, variation)
+        create_response = self.create_social_media_with_one_hash(network, variation)
 
         social_media = self.extract_social_media_object_from_create_response(create_response)
 
@@ -222,12 +232,43 @@ class VerifySocialMediaV1(APITestCase, TestUtilsMixin):
             SocialMediaBrightVerificationStatus.PENDING
         )
 
-        def is_user_app_id_linked_none_stub(_network, _app_id, _user_app_id):
-            pass
-
-        result, _ = social_media.get_and_save_verification_status(is_user_app_id_linked_none_stub)
+        result, _ = social_media.get_and_save_verification_status(self.is_user_app_id_linked_none_stub)
         self.assertEqual(result, False)
         self.assertEqual(
             social_media.bright_verification_status,
             SocialMediaBrightVerificationStatus.PENDING
         )
+
+
+class QuerySocialMediaV1(APITestCase, TestUtilsMixin):
+
+    @classmethod
+    def setUpTestData(cls):
+        upsert_initial_social_media_variations()
+
+    def test_query_social_media(self):
+        variation = SocialMediaVariation.objects.create(id=uuid.uuid4(), bright_id_app_id="sample")
+        network = BrightIdNetwork.NODE
+
+        a_not_to_be_verified_hash = 'ad063a287481ecdc6616301f780a4d63'
+        a_to_be_verified_hash = 'ba5d601dcb29874349ccdbb0c7909196'
+
+        profile_hashes = [
+            a_not_to_be_verified_hash
+        ]
+        self.create_social_media(network, variation, profile_hashes)
+
+        profile_hashes = [
+            a_to_be_verified_hash
+        ]
+        create_response = self.create_social_media(network, variation, profile_hashes)
+        social_media = self.extract_social_media_object_from_create_response(create_response)
+        social_media.get_and_save_verification_status(self.is_user_app_id_linked_true_stub)
+
+        response = self.client.post(self.query_endpoint, data={
+            'network': network,
+            'profileHashes': [a_not_to_be_verified_hash, a_to_be_verified_hash]
+        })
+        self.assertEqual(response.status_code, 200)
+        res = json.loads(response.content)
+        self.assertEqual(res, [a_to_be_verified_hash])
