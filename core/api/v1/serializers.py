@@ -53,7 +53,7 @@ class SocialMediaCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocialMedia
         fields = (
-            'context_id',
+            'app_user_id',
             'token',
             'network',
             'variation',
@@ -81,7 +81,7 @@ class SocialMediaCreateSerializer(serializers.ModelSerializer):
 
 
 class SocialMediaVerifySerializer(serializers.Serializer):
-    context_id = serializers.UUIDField()
+    app_user_id = serializers.UUIDField()
     network = serializers.ChoiceField(
         choices=BrightIdNetwork.choices,
     )

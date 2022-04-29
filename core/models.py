@@ -71,7 +71,7 @@ class SocialMedia(models.Model):
         SocialMediaVariation, on_delete=models.PROTECT, related_name="social_medias")
 
     @property
-    def context_id(self):
+    def app_user_id(self):
         """
             Used in BrightID app
         """
@@ -86,7 +86,7 @@ class SocialMedia(models.Model):
         return token.key
 
     def __str__(self):
-        return self.variation.name + ' ' + str(self.context_id)
+        return self.variation.name + ' ' + str(self.app_user_id)
 
     def get_and_save_verification_status(self, is_user_app_id_linked_func: Callable) -> (Boolean, dict):
         if self.bright_verification_status == SocialMediaBrightVerificationStatus.VERIFIED:
@@ -101,7 +101,7 @@ class SocialMedia(models.Model):
             return False, response
 
         network = self.network
-        user_app_id = self.context_id
+        user_app_id = self.app_user_id
         response = is_user_app_id_linked_func(network, app_name, user_app_id)
         if 'error' in response:
             return False, response

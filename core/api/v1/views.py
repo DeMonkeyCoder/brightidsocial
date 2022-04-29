@@ -48,9 +48,9 @@ class SocialMediaVerifyView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         network = serializer.validated_data.get('network')
-        context_id = serializer.validated_data.get('context_id')
+        app_user_id = serializer.validated_data.get('app_user_id')
         social_media = get_object_or_404(SocialMedia,
-                                         id=context_id,
+                                         id=app_user_id,
                                          network=network
                                          )
         result, response = social_media.get_and_save_verification_status(is_user_app_id_linked)
